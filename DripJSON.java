@@ -3,32 +3,32 @@ import java.io.FileReader;
 import java.io.IOException;
 
 class Mapping {
-	String ClSz;
-	String TotFq;
+	int ClSz;
+	int TotFq;
 	String Root;
-	String ClusterId;
-	String QtFq;
-	String Urls;
+	int ClusterId;
+	int QtFq;
+	int Urls;
 	String QtStr;
-	String QuteId;
+	int QuteId;
 	String Tm;
-	String Fq;
+	int Fq;
 	String UrlTy;
 	String Url;
 	
 	Mapping(String cl, String to, String ro, String clu, String qt, String ur, String qts, String qut, String tm, String fq, String urlt, String url){
-		ClSz = cl;
-		TotFq = to;
+		ClSz = Integer.parseInt(cl);
+		TotFq = Integer.parseInt(to);
 		Root = ro;
-		ClusterId = clu;
-		QtFq = qt;
-		Urls = ur;
+		ClusterId = Integer.parseInt(clu);
+		QtFq = Integer.parseInt(qt);
+		Urls = Integer.parseInt(ur);
 		QtStr = qts;
-		QuteId = qut;
+		QuteId = Integer.parseInt(qut);
 		Tm = tm;
-		Fq = fq;
+		Fq = Integer.parseInt(fq);
 		UrlTy = urlt;
-		Url = url;
+		Url = url.replace("\"","\\\"");
 		return;
 	}
 }
@@ -36,14 +36,13 @@ class Mapping {
 class DropJSON {
     public static void main(String[] args) {
         String line;
-		String lineJSON = "[";
+		String lineJSON;
 
         try {
-        	FileReader in = new FileReader("data.txt");
+        	FileReader in = new FileReader("cutting_head.txt");
         	BufferedReader br = new BufferedReader(in);
             String[] array = new String[12];
         	String[] array_tmp;
-    		int i = 0;
             while ((line = br.readLine()) != null) {
             	array_tmp = line.split("\t");
             	switch (array_tmp.length){
@@ -61,31 +60,20 @@ class DropJSON {
             		array_tmp = null;
     				break;
             	case 6:
-            		i++;
             		array[8] = array_tmp[2];
             		array[9] = array_tmp[3];
             		array[10] = array_tmp[4];
             		array[11] = array_tmp[5];
             		array_tmp = null;
                     Mapping value = new Mapping(array[0],array[1],array[2],array[3],array[4],array[5],array[6],array[7],array[8],array[9],array[10],array[11]);
-            		if(i == 50){
-            			i = 0;
-            			System.out.print(lineJSON);
-                        lineJSON = null;
-                        lineJSON = "{\"ClSz\":" + value.ClSz + ", \"TotFq\":" + value.TotFq +
-                				", \"Root\":\"" + value.Root + "\", \"ClusterId\":" + value.ClusterId +
-                				", \"QtFq\":" + value.QtFq + ", \"Urls\":" + value.Urls + ", \"QtStr\":\"" +
-                				value.QtStr + "\", \"QuteId\":" + value.QuteId + ", \"Tm\":\"" + value.Tm +
-                				"\", \"Fq\":" + value.Fq + ", \"UrlTy\":\"" + value.UrlTy + "\", \"Url\":\"" + 
-                				value.Url +"\"},";
-            		}else{
-                        lineJSON += "{\"ClSz\":" + value.ClSz + ", \"TotFq\":" + value.TotFq +
-                				", \"Root\":\"" + value.Root + "\", \"ClusterId\":" + value.ClusterId +
-                				", \"QtFq\":" + value.QtFq + ", \"Urls\":" + value.Urls + ", \"QtStr\":\"" +
-                				value.QtStr + "\", \"QuteId\":" + value.QuteId + ", \"Tm\":\"" + value.Tm +
-                				"\", \"Fq\":" + value.Fq + ", \"UrlTy\":\"" + value.UrlTy + "\", \"Url\":\"" + 
-                				value.Url +"\"},";
-                        }
+                    lineJSON = "{\"ClSz\":" + value.ClSz + ", \"TotFq\":" + value.TotFq +
+            				", \"Root\":\"" + value.Root + "\", \"ClusterId\":" + value.ClusterId +
+            				", \"QtFq\":" + value.QtFq + ", \"Urls\":" + value.Urls + ", \"QtStr\":\"" +
+            				value.QtStr + "\", \"QuteId\":" + value.QuteId + ", \"Tm\":\"" + value.Tm +
+            				"\", \"Fq\":" + value.Fq + ", \"UrlTy\":\"" + value.UrlTy + "\", \"Url\":\"" + 
+            				value.Url +"\"}\n";
+        			System.out.print(lineJSON);
+                    lineJSON = null;
     				break;
             	}
             }
@@ -95,9 +83,5 @@ class DropJSON {
         } catch (IOException e) {
             System.out.println(e);
         }
-        lineJSON += "Last";
-        lineJSON = lineJSON.replace(",Last","]");
-        System.out.print(lineJSON);
-
     }
 }
